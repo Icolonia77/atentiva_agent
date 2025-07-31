@@ -31,7 +31,7 @@ st.sidebar.button("🔁 Voltar ao Início", on_click=restart)
 # Ou, se quiser o botão centralizado na página, pode deixar assim:
 # if st.button("🔁 Voltar ao Início (página inicial)"):
 #     restart()
-#     st.experimental_rerun()
+#     st.rerun()
 
 # Etapa 1: Qualificação Inicial
 if st.session_state.etapa == 1:
@@ -41,7 +41,7 @@ if st.session_state.etapa == 1:
         if nome.strip():
             st.session_state.lead_data['nome'] = nome
             next_step()
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Por favor, preencha seu nome antes de continuar.")
 
@@ -54,7 +54,7 @@ elif st.session_state.etapa == 2:
             st.session_state.lead_data['cidade'] = cidade
             st.session_state.lead_data['estado'] = estado.upper()
             next_step()
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Preencha cidade e estado antes de continuar.")
 
@@ -77,7 +77,7 @@ elif st.session_state.etapa == 3:
             st.session_state.lead_data['cnh_ear'] = cnh
             st.session_state.lead_data['mei'] = mei
             next_step()
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Preencha todos os campos obrigatórios para prosseguir.")
 
@@ -94,7 +94,7 @@ elif st.session_state.etapa == 4:
         if st.button("Próximo", key="btn4"):
             if lido == "Sim":
                 next_step()
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("Por favor, confirme a leitura da apresentação para prosseguir.")
     else:
@@ -124,7 +124,7 @@ elif st.session_state.etapa == 5:
             st.session_state.lead_data['dados_bancarios'] = dados_bancarios
             st.session_state.lead_data['chave_pix'] = chave_pix
             next_step()
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Preencha todos os campos e envie os arquivos para prosseguir.")
 
@@ -133,7 +133,7 @@ elif st.session_state.etapa == 6:
     st.success("Documentos recebidos! Agora é só aguardar a validação e liberar seu treinamento. Dúvidas? Chame Ricardo no WhatsApp 19 99686-8581.")
     if st.button("Reiniciar"):
         restart()
-        st.experimental_rerun()
+        st.rerun()
 
 st.divider()
 st.subheader("❓ Dúvidas sobre a Atentiva? Pergunte abaixo:")
@@ -183,7 +183,7 @@ if st.session_state.faq_submit and st.session_state.faq_input_cache:
 #         if nome.strip():
 #             st.session_state.lead_data['nome'] = nome
 #             next_step()
-#             st.experimental_rerun()
+#             st.rerun()
 #         else:
 #             st.warning("Por favor, preencha seu nome antes de continuar.")
 
