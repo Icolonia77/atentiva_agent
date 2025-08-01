@@ -17,12 +17,43 @@ def normalizar_texto(texto):
 
 def get_presentation_by_city(city_state_string):
     """Determina qual PDF de apresentação usar com base na cidade."""
+    # Extrai apenas a parte da cidade da string completa
     cidade_normalizada = normalizar_texto(city_state_string.split(',')[0].strip())
 
     if cidade_normalizada in CIDADES_SP_CAPITAL:
         return "PARCEIRO_ATENTIVA_SP.pdf"
     else:
         return "PARCEIRO_ATENTIVA_D7.pdf"
+
+
+
+
+
+# # utils.py
+
+# CIDADES_SP_CAPITAL = [
+#     'aruja', 'barueri', 'caieiras', 'carapicuiba', 'cotia', 'diadema',
+#     'embu das artes', 'ferraz de vasconcelos', 'franco da rocha', 'guarulhos',
+#     'itapecerica da serra', 'itapevi', 'itaquaquecetuba', 'jandira',
+#     'mairipora', 'osasco', 'ribeirao pires', 'santana de parnaiba',
+#     'santo andre', 'sao bernardo do campo', 'sao caetano do sul', 'taboao da serra',
+#     'vargem grande paulista'
+# ]
+
+# def normalizar_texto(texto):
+#     """Remove acentos e converte para minúsculas para comparação."""
+#     if not isinstance(texto, str):
+#         return ""
+#     return texto.lower().replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('ç', 'c').replace('ã', 'a').replace('ô', 'o')
+
+# def get_presentation_by_city(city_state_string):
+#     """Determina qual PDF de apresentação usar com base na cidade."""
+#     cidade_normalizada = normalizar_texto(city_state_string.split(',')[0].strip())
+
+#     if cidade_normalizada in CIDADES_SP_CAPITAL:
+#         return "PARCEIRO_ATENTIVA_SP.pdf"
+#     else:
+#         return "PARCEIRO_ATENTIVA_D7.pdf"
 
 
 
