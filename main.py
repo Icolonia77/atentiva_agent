@@ -100,14 +100,14 @@ elif st.session_state.etapa == 4:
 elif st.session_state.etapa == 5:
     st.header("Envio de Documentos para Cadastro")
     st.markdown("""
-    - [cite_start]**Foto da CNH** (preferencialmente PDF) [cite: 46]
-    - [cite_start]**Foto do CRLV** (preferencialmente PDF) [cite: 47]
-    - [cite_start]**Dados Bancários** (Banco / Agência / Conta / Tipo / Nome / CPF ou CNPJ) [cite: 48, 49, 50]
-    - [cite_start]**Chave PIX** [cite: 51]
-    - [cite_start]**Certificado MEI** [cite: 52]
-    - [cite_start]**4 fotos atuais do veículo** (frente, trás, laterais) [cite: 53]
-    - [cite_start]**Endereço completo e CEP** [cite: 54]
-    - [cite_start]**Atestado de Antecedentes Criminais** [cite: 55]
+    - **Foto da CNH** (preferencialmente PDF) [cite: 46]
+    - **Foto do CRLV** (preferencialmente PDF) [cite: 47]
+    - **Dados Bancários** (Banco / Agência / Conta / Tipo / Nome / CPF ou CNPJ) [cite: 48, 49, 50]
+    - **Chave PIX** [cite: 51]
+    - **Certificado MEI** [cite: 52]
+    - **4 fotos atuais do veículo** (frente, trás, laterais) [cite: 53]
+    - **Endereço completo e CEP** [cite: 54]
+    - **Atestado de Antecedentes Criminais** [cite: 55]
     """)
     files = st.file_uploader("Envie todos os arquivos aqui (PDF, JPG ou PNG)", accept_multiple_files=True, type=["pdf","jpg","jpeg","png"])
     endereco = st.text_area("Endereço completo e CEP", key="endereco_input")
