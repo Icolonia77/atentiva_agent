@@ -2,8 +2,14 @@
 # VERSÃO CORRIGIDA
 
 import streamlit as st
-from utils import get_presentation_by_city
+import os
 from faq_base import get_faq_answer
+
+# Vamos carregar a função utilitária no momento de uso. Isso permite
+# recarregar o módulo em tempo de execução caso o arquivo utils.py
+# seja atualizado sem reiniciar o servidor.
+import importlib
+import atentiva_utils as utils_module
 
 st.set_page_config(page_title="Agente Atentiva", page_icon="🚗", layout="centered")
 
@@ -81,54 +87,96 @@ elif st.session_state.etapa == 3:
 elif st.session_state.etapa == 4:
     cidade = st.session_state.lead_data.get('cidade', '')
     estado = st.session_state.lead_data.get('estado', '')
-    doc_path = get_presentation_by_city(cidade, estado)
+    # Recarregamos o módulo utils para garantir que modificações no arquivo
+    # utils.py sejam refletidas imediatamente. Assim evitamos a necessidade
+    # de reiniciar o servidor sempre que a lógica de seleção de PDFs for
+    # atualizada.
+    utils_module = importlib.reload(utils_module)
+    doc_path = utils_module.get_presentation_by_city(cidade, estado)
     if doc_path:
-        st.success(f"Baixe e leia a apresentação do parceiro Atentiva para sua região ({cidade}/{estado}):")
+        st.success(
+            f"Aqui está a apresentação do parceiro Atentiva para {cidade}/{estado}. "
+            "Ela contém detalhes importantes sobre o trabalho, remuneração e requisitos. "
+            "Faça o download, leia com calma e depois confirme a leitura para seguirmos."
+        )
         with open(doc_path, "rb") as file:
-            st.download_button("📄 Baixar Apresentação", data=file, file_name=doc_path)
-        lido = st.radio("Leu a apresentação completa?", ["Sim", "Ainda não"], key="apresent_radio")
+            st.download_button(
+                "📄 Baixar Apresentação",
+                data=file,
+                file_name=os.path.basename(doc_path),
+            )
+        lido = st.radio(
+            "Você conseguiu ler a apresentação por completo?",
+            ["Sim", "Ainda não"],
+            key="apresent_radio",
+        )
         if st.button("Próximo", key="btn4"):
             if lido == "Sim":
                 next_step()
                 st.rerun()
             else:
-                st.warning("Por favor, confirme a leitura da apresentação para prosseguir.")
+                st.warning(
+                    "Sem problemas! Leia a apresentação com atenção e confirme a leitura para prosseguir."
+                )
     else:
-        st.warning("Região não suportada no momento. Entre em contato com Ricardo (19 99686-8581).")
+        st.warning(
+            "Ops! Ainda não atendemos sua região ou não temos uma apresentação específica. "
+            "Por favor, entre em contato com o Ricardo (19 99686‑8581) para verificarmos a melhor forma de prosseguir."
+        )
 
 # Etapa 5: Upload dos Documentos
 elif st.session_state.etapa == 5:
     st.header("Envio de Documentos para Cadastro")
-    st.markdown("""
-    - **Foto da CNH** (preferencialmente PDF)
-    - **Foto do CRLV** (preferencialmente PDF)
-    - **Dados Bancários** (Banco / Agência / Conta / Tipo / Nome / CPF ou CNPJ)
-    - **Chave PIX**
-    - **Certificado MEI**
-    - **4 fotos atuais do veículo** (frente, trás, laterais)
-    - **Endereço completo e CEP**
-    - **Atestado de Antecedentes Criminais**
-    """)
-    files = st.file_uploader("Envie todos os arquivos aqui (PDF, JPG ou PNG)", accept_multiple_files=True, type=["pdf","jpg","jpeg","png"])
+    st.markdown(
+        '''
+        Estamos quase lá! Para concluir seu cadastro, precisamos dos seguintes documentos:
+
+        - **Foto da CNH** (preferencialmente versão digital em PDF)
+        - **Foto do CRLV** (preferencialmente versão digital em PDF)
+        - **Dados Bancários** (Banco / Agência / Conta / Corrente ou Poupança / Nome Titular / CPF ou CNPJ)
+        - **Chave PIX** (deve ser da mesma conta informada acima)
+        - **Certificado MEI** (ou apenas informe o CNPJ)
+        - **4 fotos atuais do veículo** (frente, traseira e laterais)
+        - **Endereço completo e CEP**
+        - **Atestado de Antecedentes Criminais**
+
+        Você pode anexar arquivos nos formatos PDF, JPG ou PNG. Envie todos os documentos de uma só vez para facilitar nossa análise.
+        '''
+    )
+    files = st.file_uploader(
+        "Clique ou arraste os arquivos aqui",
+        accept_multiple_files=True,
+        type=["pdf", "jpg", "jpeg", "png"],
+    )
     endereco = st.text_area("Endereço completo e CEP", key="endereco_input")
-    dados_bancarios = st.text_area("Dados Bancários (Banco, Agência, Conta, Tipo, Nome, CPF ou CNPJ)", key="dados_bancarios_input")
-    chave_pix = st.text_input("Chave PIX", key="chave_pix_input")
+    dados_bancarios = st.text_area(
+        "Dados Bancários (Banco, Agência, Conta, Corrente ou Poupança, Nome Titular, CPF ou CNPJ)",
+        key="dados_bancarios_input",
+    )
+    chave_pix = st.text_input(
+        "Chave PIX (deve ser da mesma conta bancária informada)",
+        key="chave_pix_input",
+    )
     if st.button("Enviar Documentos", key="btn5"):
         if files and endereco.strip() and dados_bancarios.strip() and chave_pix.strip():
-            st.session_state.lead_data['docs'] = [f.name for f in files]
-            st.session_state.lead_data['endereco'] = endereco
-            st.session_state.lead_data['dados_bancarios'] = dados_bancarios
-            st.session_state.lead_data['chave_pix'] = chave_pix
+            st.session_state.lead_data["docs"] = [f.name for f in files]
+            st.session_state.lead_data["endereco"] = endereco
+            st.session_state.lead_data["dados_bancarios"] = dados_bancarios
+            st.session_state.lead_data["chave_pix"] = chave_pix
             next_step()
             st.rerun()
         else:
-            st.warning("Preencha todos os campos e envie os arquivos para prosseguir.")
+            st.warning(
+                "Por favor, preencha todos os campos e anexe os arquivos solicitados antes de prosseguir."
+            )
 
-# Etapa 6: Boas-vindas e próximos passos
+# Etapa 6: Boas‑vindas e próximos passos
 elif st.session_state.etapa == 6:
-    # --- LINHA CORRIGIDA ---
-    # O texto agora está completamente dentro das aspas, sem marcadores de citação.
-    st.success("Documentos recebidos! Agora é só aguardar a validação e liberar seu treinamento. Dúvidas? Chame Ricardo no WhatsApp 19 99686-8581.")
+    st.success(
+        "Recebemos todos os seus documentos e iniciaremos a análise agora mesmo! "
+        "Em até 2 dias úteis você receberá seu acesso ao treinamento e ao aplicativo. "
+        "Qualquer dúvida nesse período, é só chamar o Ricardo no WhatsApp 19 99686‑8581."
+    )
     if st.button("Reiniciar"):
         restart()
         st.rerun()
